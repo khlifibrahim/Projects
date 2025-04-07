@@ -1,20 +1,20 @@
-// import { useState } from 'react'
-import Menu from './Components/Menu/Menu'
-import Hero from './Components/Hero/Hero'
-import Footer from './Components/Footer/Footer'
-import Contact from './Components/Contact/Contact'
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './Components/Layout';
+import Home from './Pages/Home/Home';
+import Blog from './Components/Layout';
+import Article from './Pages/Article/Article'
 
 function App() {
   return (
-    <div className="max-w-5xl flex flex-col items-center py-8">
-      <div className="bg-[url('./Vector.png')] bg-no-repeat bg-cover w-full h-full absolute top-0 right-0 -z-10"></div>
-      <Menu/>
-      <Hero/>
-      <div className="h-72">Section 1</div>
-      <Contact/>
-      <Footer/>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="blog" element={<Blog />} />
+          <Route path='article/:title' element={<Article/>}></Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
