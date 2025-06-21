@@ -107,6 +107,12 @@
             sales.classList.remove('hidden')
         })
 
+        document.addEventListener('click', (e) => {
+            if(e.target.classList.contains('overlay')){
+                sales.classList.add('hidden')
+            }
+        })
+
         backBtn.addEventListener('click', () => {
             sales.classList.add('hidden')
         })

@@ -30,22 +30,23 @@ Route::prefix('charges')->group( function () {
 
 Route::prefix('credits')->group(function () {
     Route::get('/', [CustomerCreditController::class, 'index'])->name('credits.index');
-});
-Route::prefix('customer-credit')->group( function () {
-    Route::get('/', [CustomerCreditController::class, 'index'])->name('credits.customer.index');
-    Route::get('/create', [CustomerCreditController::class, 'create'])->name('credits.customer.create');
-    Route::post('/store', [CustomerCreditController::class, 'store'])->name('credits.customer.store');
-    Route::get('{credit}/edit', [CustomerCreditController::class, 'edit'])->name('credits.customer.edit');
-    Route::get('{credit}/show', [CustomerCreditController::class, 'show'])->name('credits.customer.show');
-    Route::delete('{credit}/destroy', [CustomerCreditController::class, 'destroy'])->name('credits.customer.destroy');
-});
-Route::prefix('supplier-credit')->group( function () {
-    Route::get('/', [SupplierCreditController::class, 'index'])->name('credits.supplier.index');
-    Route::get('/create', [SupplierCreditController::class, 'create'])->name('credits.supplier.create');
-    Route::post('/store', [SupplierCreditController::class, 'store'])->name('credits.supplier.store');
-    Route::get('{credit}/edit', [SupplierCreditController::class, 'edit'])->name('credits.supplier.edit');
-    Route::get('{credit}/show', [SupplierCreditController::class, 'show'])->name('credits.supplier.show');
-    Route::delete('{credit}/destroy', [SupplierCreditController::class, 'destroy'])->name('credits.supplier.destroy');
+
+    Route::prefix('customer-credit')->group( function () {
+        Route::get('/', [CustomerCreditController::class, 'index'])->name('credits.customer.index');
+        Route::get('/create', [CustomerCreditController::class, 'create'])->name('credits.customer.create');
+        Route::post('/store', [CustomerCreditController::class, 'store'])->name('credits.customer.store');
+        Route::get('{credit}/edit', [CustomerCreditController::class, 'edit'])->name('credits.customer.edit');
+        Route::get('{credit}/show', [CustomerCreditController::class, 'show'])->name('credits.customer.show');
+        Route::delete('{credit}/destroy', [CustomerCreditController::class, 'destroy'])->name('credits.customer.destroy');
+    });
+    Route::prefix('supplier-credit')->group( function () {
+        Route::get('/', [SupplierCreditController::class, 'index'])->name('credits.supplier.index');
+        Route::get('/create', [SupplierCreditController::class, 'create'])->name('credits.supplier.create');
+        Route::post('/store', [SupplierCreditController::class, 'store'])->name('credits.supplier.store');
+        Route::get('{credit}/edit', [SupplierCreditController::class, 'edit'])->name('credits.supplier.edit');
+        Route::get('{credit}/show', [SupplierCreditController::class, 'show'])->name('credits.supplier.show');
+        Route::delete('{credit}/destroy', [SupplierCreditController::class, 'destroy'])->name('credits.supplier.destroy');
+    });
 });
 
 

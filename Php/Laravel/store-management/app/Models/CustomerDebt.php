@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Product;
 
 class CustomerDebt extends Model
 {
-    // protected $table = '';
-    protected $fillable = ['customer_name', 'item', 'due_date', 'category', 'status'];
+    // protected $table = 'customer_debts';
+    protected $fillable = ['customer_name', 'item', 'amount', 'due_date', 'category', 'status'];
 
-    public function products() {
-        return $this->hasMany(Product::class);
+    public function product() {
+        return $this->belongsTo(Product::class, 'item');
     }
 }

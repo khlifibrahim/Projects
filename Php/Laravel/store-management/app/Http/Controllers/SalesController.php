@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\testRequest;
 use Illuminate\Http\Request;
 use App\Models\Sales;
 use App\Models\Product;
@@ -14,7 +15,8 @@ class SalesController extends Controller
         $sales = Sales::with('product')->paginate(5);
         $products = Product::all();
 
-        return view("pages.sales.index", ['sales' => $sales, 'products' => $products]);
+
+        return view("pages.sales.index", [ 'sales' => $sales, 'products' => $products]);
     }
 
     public function create() {

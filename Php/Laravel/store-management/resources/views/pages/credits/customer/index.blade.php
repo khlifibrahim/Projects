@@ -25,10 +25,12 @@
                     </div>
                     <div class="products-list">
                         <div class="flex items-center justify-between h-[50px]  px-8 mt-10 font-[Nunito] text-[#030229] rounded-[10px]">
-                            <div class="row basis-[100%]">Name</div>
+                            <div class="row basis-[100%]">Customer Name</div>
                             <div class="row basis-[80%]">Product</div>
-                            <div class="row basis-[80%]">Quantity</div>
-                            <div class="row basis-[80%]">Total</div>
+                            <div class="row basis-[80%]">Category</div>
+                            <div class="row basis-[80%]">Amouts</div>
+                            <div class="row basis-[80%]">Status</div>
+                            <div class="row basis-[80%]">Date</div>
                             <div class="row basis-[20%]"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="#030229"  class="icon icon-tabler icons-tabler-filled icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 6a1 1 0 0 1 .117 1.993l-.117 .007h-.081l-.919 11a3 3 0 0 1 -2.824 2.995l-.176 .005h-8c-1.598 0 -2.904 -1.249 -2.992 -2.75l-.005 -.167l-.923 -11.083h-.08a1 1 0 0 1 -.117 -1.993l.117 -.007h16z" /><path d="M14 2a2 2 0 0 1 2 2a1 1 0 0 1 -1.993 .117l-.007 -.117h-4l-.007 .117a1 1 0 0 1 -1.993 -.117a2 2 0 0 1 1.85 -1.995l.15 -.005h4z" /></svg></div>
                         </div>
 
@@ -40,12 +42,13 @@
                             @endif
 
                             @foreach($credits as $credit)
-                                <div aria-keyshortcuts="{{ $credit -> id}}" class="flex items-center justify-between h-[50px] px-8 mt-2 font-[Nunito] rounded-[10px] hover:bg-white hover:shadow-neutral-400 cursor-pointer">
-                                    <div class="row basis-[100%]">{{$credit -> name}}</div>
+                                <div class="flex items-center justify-between h-[50px] px-8 mt-2 font-[Nunito] rounded-[10px] hover:bg-white hover:shadow-neutral-400 cursor-pointer">
+                                    <div class="row basis-[100%]">{{$credit -> customer_name}}</div>
+                                    <div class="row basis-[80%]">{{$credit -> item}}</div>
                                     <div class="row basis-[80%]">{{$credit -> category}}</div>
-                                    <div class="row basis-[80%]">{{$credit -> quantity}} Pcs</div>
-                                    <div class="row basis-[80%]">{{$credit -> price}} DH</div>
-                                    <div class="row basis-[80%]">{{$credit -> quantity * $credit -> price  }} DH</div>
+                                    <div class="row basis-[80%]">{{$credit -> amount}} DH</div>
+                                    <div class="row basis-[80%]">{{$credit -> status}}</div>
+                                    <div class="row basis-[80%]">{{$credit -> due_date  }}</div>
                                     <div class="row relative basis-[20%] items-end">
                                         <span class="action" id="action" onclick="openMenu(this, {{$credit->id}})">
                                             <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="#B3B3BF"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-dots-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
@@ -57,7 +60,7 @@
                                                     <p class="text-[#5B93FF]">Edit</p>
                                                 </span>
                                                 <span>
-                                                    <form action="{{route('products.destroy', parameters: $credit->id)}}" method="POST" >
+                                                    <form action="{{route('credits.customer.destroy', parameters: $credit->id)}}" method="POST" >
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="flex gap-2 bg-[#E71D36]/20 px-3 py-2 rounded-[10px] cursor-pointer">
@@ -80,7 +83,7 @@
                 </div>
             </div>
             </div>
-        <div id="product-form" class="overlay fixed top-0 left-0 bg-black/60 w-full h-full">
+        <div id="product-form" class="overlay fixed top-0 left-0 bg-black/60 w-full h-full hidden">
             <div class="add-products absolute top-0 right-0 h-screen  w-[400px]  py-16 px-10 bg-white overflow-y-scroll">
                 <div class="new-product z-10 text-[#030229]">
                     <div class="head flex items-center gap-8">
@@ -98,20 +101,28 @@
 @endsection
 
 @push('scripts')
-    <script>
-        const inputs = Array.from(document.querySelectorAll('form input'));
+<script>
+    document.addEventListener('DOMContentLoaded', ()=> {
+        const inputs = Array.from(document.querySelectorAll('form input, form select'));
+        const form = document.querySelector('#debtForm')
         const addProduct = document.getElementById('add-products');
         const productForm = document.getElementById('product-form');
         const backBtn = document.getElementById('back-btn');
         const actionBtn = document.getElementById('action');
         const actionMenuBtn = document.getElementById('action-menu')
 
-        const qnt = document.querySelector('.quantity')
-        const sppl = document.querySelector('.supplier')
-        const prDate = document.querySelector('.purchase_date')
+        const category = document.querySelector('#category')
+        const product = document.querySelector('.product')
+        let valid = true;
 
         addProduct.addEventListener('click', () => {
             productForm.classList.remove('hidden')
+        })
+
+        document.addEventListener('click', (e) => {
+            if(e.target.classList.contains('overlay')){
+                productForm.classList.add('hidden')
+            }
         })
 
         backBtn.addEventListener('click', () => {
@@ -121,21 +132,39 @@
         function openMenu(e, value) {
             e.nextElementSibling.classList.toggle('hidden')
         }
-console.log('inputs: ', inputs)
 
-        const category = document.getElementById('category');
-        console.log('add product work')
-        document.addEventListener('click', ()=> {
-
-            if(category.value === 'product') {
-                qnt.classList.remove('hidden')
-                sppl.classList.remove('hidden')
-                prDate.classList.remove('hidden')
-            }else if(category.value === 'service') {
-                qnt.classList.add('hidden')
-                sppl.classList.add('hidden')
-                prDate.classList.add('hidden')
+        document.addEventListener('click', ()=>{
+            if(category.value === 'service') {
+                product.classList.add('hidden')
             }
         })
-    </script>
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            inputs.forEach(input => {
+                if(input.value == '' || input.value == 'default') {
+                    if(category.value === 'service') return valid = true;
+                    valid = false;
+
+                    const removeErrors = setInterval(() => {
+                        input.previousElementSibling.style.color = '#E71D36';
+                        input.style.border = '1px solid #E71D36'
+                    }, 100);
+
+                    setTimeout(() => {
+                        clearInterval(removeErrors)
+                        console.log("Stopped after 2.5 seconds");
+                    }, 2500);
+
+                }
+            })
+            console.log('check form is valid: ', valid)
+            if(valid) {
+                form.submit()
+            }
+        })
+    })
+
+</script>
 @endpush
